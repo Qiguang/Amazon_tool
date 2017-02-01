@@ -15,5 +15,26 @@
 		},
 		"default_title": "my clock",
 		"default_popup": "popup.html"
-	}
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://www.amazon.com/*", "*://www.amazon.jp/*"],
+			"js": ["js/changePageBkgdColor.js"]
+		},
+		{
+			"matches": ["*://www.amazon.com/s/*", "*://www.amazon.jp/s/*"],
+			"js": ["js/utils.js","js/showRMBschRsltPage.js"]
+		}
+	],
+	"background": {
+		"scripts": [
+			"js/utils.js",
+			"js/getExchangeRate.js"
+		]
+	},
+	"permissions": [
+		"*://www.amazon.com/",
+		"*://www.amazon.jp/",
+		"http://hl.anseo.cn/rate_USD.aspx"
+	]
 }
