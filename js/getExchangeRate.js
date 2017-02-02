@@ -1,8 +1,8 @@
-var exchangeRate = null;
+var exchangeRate = new Array;
 
 function getExRateFrNet(regionToken, callback) { // get exchange rate from internet
-	if (exchangeRate) {
-		callback(exchangeRate);
+	if (exchangeRate[regionToken]) {
+		callback(exchangeRate[regionToken]);
 		return;
 	}
 	var result = null;
@@ -13,6 +13,7 @@ function getExRateFrNet(regionToken, callback) { // get exchange rate from inter
 			regex = RegExp("1\\s*美元[^0-9]*([0-9.]+)\\s*人民币");
 		break;
 		case "co.jp":
+			regex = RegExp("1\\s*日元[^0-9]*([0-9.]+)\\s*人民币");
 		break;
 		default:
 		break;
@@ -21,8 +22,8 @@ function getExRateFrNet(regionToken, callback) { // get exchange rate from inter
 		function(response){
 			result = regex.exec(response);
 			if(result){
-				exchangeRate = result[1];
-				callback(exchangeRate);
+				exchangeRate[regionToken] = result[1];
+				callback(exchangeRate[regionToken]);
 			}else{
 				console.log("html parse failed. source page format may changed")
 			}
@@ -32,7 +33,8 @@ chrome.runtime.onMessage.addListener(
 	function(message, sender, sendResponse){
 		console.log("recv message "+message.header);
 		if(message.header == "reqExchangeRate"){
-			getExRateFrNet("com", function(exchangeRate){
+			console.log("location "+message.locationToken);
+			getExRateFrNet(message.locationToken, function(exchangeRate){
 				chrome.tabs.sendMessage(sender.tab.id,
 					{header:"exchangeRate",exchangeRate:exchangeRate});
 			});
