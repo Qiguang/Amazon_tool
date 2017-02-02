@@ -28,6 +28,10 @@
 		{
 			"matches": [ "*://www.amazon.co.jp/s/*"],
 			"js": ["js/utils.js","js/showRMBschRsltPage.js"]
+		},
+		{
+			"matches": [ "*://www.amazon.co.uk/s/*"],
+			"js": ["js/utils.js","js/showRMBschRsltPage.js"]
 		}
 	],
 	"background": {
