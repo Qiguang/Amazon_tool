@@ -1,15 +1,13 @@
 chrome.webRequest.onCompleted.addListener(
-        function(details) {
-			console.log("===+++++====");
-			console.log(details.type);
-			if (tabsId.indexOf(details.tabId)!=-1 && details.type=="xmlhttprequest") {
-				console.log(details.url);
-				console.log(details.type);
-				console.log(details.tabId);
-				chrome.tabs.sendMessage(details.tabId,{header:"XHReqHappen"});
-			}
-        },
-		{urls:["*://www.amazon.com/*","*://www.amazon.co.jp/*","*://www.amazon.co.uk/*"]}
+	function(details) {
+		console.log("+++++++++++++++");
+		console.log(details.type);
+		console.log(details.url);
+		if (tabsId.indexOf(details.tabId)!=-1 && details.type=="xmlhttprequest") {
+			chrome.tabs.sendMessage(details.tabId,{header:"XHReqHappen"});
+		}
+	},
+	{urls:["*://www.amazon.com/*","*://www.amazon.co.jp/*","*://www.amazon.co.uk/*"]}
 );
 var tabsId = new Array();
 chrome.runtime.onMessage.addListener(
