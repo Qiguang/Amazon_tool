@@ -1,5 +1,4 @@
 function convert2RMB(orig, exchangeRate) {
-	console.log("convert2RMB");
 	var nums = new Array;
 	if (orig) {
 		for (var i=0; i< orig.length; ++i) {
@@ -11,7 +10,6 @@ function convert2RMB(orig, exchangeRate) {
 }
 // input: "$ 123 45" output: "123.45"
 function formatOrig(orig, locationToken) {
-	console.log("formatOrig");
 	var strings = new Array;
 	var matchRegex, replaceRegex;
 	var replacePattern;
@@ -39,8 +37,10 @@ function formatOrig(orig, locationToken) {
 	if (strings) {
 		for (var i=0; i<strings.length; ++i) {
 			strings[i]=strings[i].replace(replaceRegex,replacePattern);
-			console.log(strings[i]);
 		}
+	} else {
+		strings = new Array;
+		strings[0] = '0';
 	}
 	return strings;
 }
@@ -68,7 +68,8 @@ function showRMB(exchangeRate, style) {
 		default:
 		break;
 	}
-
+	document.getElementById(resultsListTagId).setAttribute("token","RMBshown");
+	listenXmlHttpRequest();
 }
 function showRMBforUS(exchangeRate, style) {
 	console.log("showRMB");
@@ -80,7 +81,7 @@ function showRMBforUS(exchangeRate, style) {
 			console.log("RMB="+RMBs);
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
-			node.setAttribute("name","RMB");
+			node.setAttribute("token","RMB");
 			var childs = node.getElementsByClassName("sx-price-currency");
 			for (var x=0; x<childs.length; ++x) {
 				childs[x].innerHTML="¥";
@@ -149,17 +150,33 @@ function showRMBforUK(exchangeRate, style) {
 		}
 	}
 }
+var resultsListTagId = "s-results-list-atf";
 chrome.runtime.onMessage.addListener(
 	function(message, sender, sendResponse){
-		console.log("recv message "+message.header);
-		if(message.header == "exchangeRate"){
-			console.log("exchangeRate="+message.exchangeRate);
-			showRMB(message.exchangeRate, "color:green;background-color:lightgrey");
+		switch (message.header) {
+			case "exchangeRate":
+				console.log("exchangeRate="+message.exchangeRate);
+				showRMB(message.exchangeRate, "color:green;background-color:lightgrey");
+			break;
+			case "XHReqHappen":
+				if (!document.getElementById(resultsListTagId).getAttribute("token")) {
+					console.log("XHReqHappen+++");
+					toggleShowRMB();	
+				}
+			break;
 		}
 	}
 );
-message = new Object;
-message.header = "reqExchangeRate";
-message.locationToken = getLocationToken();
-chrome.runtime.sendMessage(message);
+function toggleShowRMB() {
+	message = new Object;
+	message.header = "reqExchangeRate";
+	message.locationToken = getLocationToken();
+	chrome.runtime.sendMessage(message);
+}
+function listenXmlHttpRequest() {
+	message = new Object;
+	message.header = "listenXHRequest";
+	chrome.runtime.sendMessage(message);
+}
 console.log("==========================");
+toggleShowRMB();

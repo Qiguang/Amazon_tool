@@ -23,7 +23,7 @@
 		},
 		{
 			"matches": ["*://www.amazon.com/s/*"],
-			"js": ["js/utils.js","js/showRMBschRsltPage.js"]
+			"js": ["js/jquery-3.1.1.min.js","js/utils.js","js/showRMBschRsltPage.js"]
 		},
 		{
 			"matches": [ "*://www.amazon.co.jp/s/*"],
@@ -37,12 +37,15 @@
 	"background": {
 		"scripts": [
 			"js/utils.js",
-			"js/getExchangeRate.js"
+			"js/getExchangeRate.js",
+			"js/background.js"
 		]
 	},
 	"permissions": [
+		"webRequest",
 		"*://www.amazon.com/",
-		"*://www.amazon.jp/",
-		"http://hl.anseo.cn/rate_USD.aspx"
+		"*://www.amazon.co.jp/",
+		"*://www.amazon.co.uk/",
+		"http://hl.anseo.cn/"
 	]
 }

@@ -34,13 +34,15 @@ function getExRateFrNet(regionToken, callback) { // get exchange rate from inter
 }
 chrome.runtime.onMessage.addListener(
 	function(message, sender, sendResponse){
-		console.log("recv message "+message.header);
-		if(message.header == "reqExchangeRate"){
-			console.log("location "+message.locationToken);
-			getExRateFrNet(message.locationToken, function(exchangeRate){
-				chrome.tabs.sendMessage(sender.tab.id,
-					{header:"exchangeRate",exchangeRate:exchangeRate});
-			});
+		switch (message.header) {
+			case "reqExchangeRate":
+				console.log("recv message "+message.header);
+				console.log("location "+message.locationToken);
+				getExRateFrNet(message.locationToken, function(exchangeRate){
+					chrome.tabs.sendMessage(sender.tab.id,
+						{header:"exchangeRate",exchangeRate:exchangeRate});
+				});
+			break;
 		}
 	}
 );
