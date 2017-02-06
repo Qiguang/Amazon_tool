@@ -16,6 +16,9 @@ function getExRateFrNet(regionToken, callback) { // get exchange rate from inter
 			regex = RegExp("1\\s*日元[^0-9]*([0-9.]+)\\s*人民币");
 		break;
 		case "co.uk":
+			regex = RegExp("1\\s*英镑[^0-9]*([0-9.]+)\\s*人民币");
+		break;
+		case "de":
 			regex = RegExp("1\\s*欧元[^0-9]*([0-9.]+)\\s*人民币");
 		break;
 		default:

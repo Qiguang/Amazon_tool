@@ -2,6 +2,7 @@ function change_background_color(color) {
 	document.getElementsByTagName("body")[0].setAttribute("style","background-color:"+color);
 }
 // change_background_color("lightgreen");
+/* open links in new tab
 var base = document.getElementsByTagName("base")[0];
 if (base) {
 	base.setAttribute("target","_blank");
@@ -10,3 +11,4 @@ if (base) {
 	base.setAttribute("target","_blank");
 	document.getElementsByTagName("header")[0].appendChild(base);
 }
+*/

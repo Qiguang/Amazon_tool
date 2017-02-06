@@ -3,7 +3,7 @@ function convert2RMB(orig, exchangeRate) {
 	if (orig) {
 		for (var i=0; i< orig.length; ++i) {
 			nums[i] = Number(orig[i]*exchangeRate);
-			console.log(nums[i]);
+			console.log(orig[i]+"->"+nums[i].toFixed(0));
 		}
 	}
 	return nums;
@@ -13,21 +13,24 @@ function formatOrig(orig, locationToken) {
 	var strings = new Array;
 	var matchRegex, replaceRegex;
 	var replacePattern;
+	// remove comma
+	orig = orig.replace(RegExp(",",'g'),'');
 	switch (locationToken) {
 		case "com":
-			matchRegex = RegExp("\\D\\s*\\d+\\s+\\d+",'g');
-			replaceRegex = RegExp("\\D\\s*(\\d+)\\s+(\\d+)");
+			matchRegex = RegExp("\\d+\\s+\\d+",'g');
+			replaceRegex = RegExp("(\\d+)\\s+(\\d+)");
 			replacePattern = "$1.$2";
 		break;
 		case "co.jp":
-			matchRegex = RegExp("\\D\\s*[0-9,]+",'g');
-			replaceRegex = RegExp("\\D?\\s*(\\d+)",'g');
-			replacePattern = "$1";
+			matchRegex = RegExp("\\d+",'g');
 		break;
 		case "co.uk":
-			matchRegex = RegExp("\\D\\s*([0-9.]+)",'g');
-			replaceRegex = RegExp("\\D?\\s*([0-9.]+)",'g');
-			replacePattern = "$1";
+			matchRegex = RegExp("([0-9.]+)",'g');
+		break;
+		case "de":
+			matchRegex = RegExp("[0-9]+",'g');
+			replaceRegex = RegExp("(.*)(\\d\\d)",'g');
+			replacePattern = "$1.$2";
 		break;
 		default:
 			return strings;
@@ -55,6 +58,7 @@ function getLocationToken() {
 	return locationToken;
 }
 function showRMB(exchangeRate, style) {
+	console.log("showRMB");
 	switch (getLocationToken()) {
 		case "com":
 			showRMBforUS(exchangeRate, style);
@@ -63,22 +67,28 @@ function showRMB(exchangeRate, style) {
 			showRMBforJP(exchangeRate, style);
 		break;
 		case "co.uk":
-			showRMBforUK(exchangeRate, style);
+		case "de":
+			 showRMBforUkDe(exchangeRate, style);
 		break;
 		default:
 		break;
 	}
 	document.getElementById(resultsListTagId).setAttribute("token","RMBshown");
 	listenXmlHttpRequest();
+	console.log("showRMB-end");
 }
 function showRMBforUS(exchangeRate, style) {
-	console.log("showRMB");
 	var elements = document.getElementsByClassName("sx-price sx-price-large");
 	if (elements && elements.length != 0) {
 		for (var i=0; i < elements.length; ++i) {
+			if (elements[i].getAttribute("token")) {
+				continue;
+			}
+			if (i+1 < elements.length && elements[i+1].getAttribute("token")) {
+				continue;
+			}
 			var RMBs = convert2RMB(formatOrig(data_of(elements[i]), getLocationToken()),exchangeRate);
 			if (!RMBs) continue;
-			console.log("RMB="+RMBs);
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
 			node.setAttribute("token","RMB");
@@ -98,16 +108,22 @@ function showRMBforUS(exchangeRate, style) {
 			elements[i].parentNode.appendChild(node);
 			++i;
 		}
+	} else {
+		console.log("get"+"sx-price sx-price-large"+"failed");
 	}
 }
 function showRMBforJP(exchangeRate, style) {
-	console.log("showRMB");
 	var elements = document.getElementsByClassName("a-size-base a-text-bold");
 	if (elements && elements.length != 0) {
 		for (var i=0; i < elements.length; ++i) {
+			if (elements[i].getAttribute("token")) {
+				continue;
+			}
+			if (i+1 < elements.length && elements[i+1].getAttribute("token")) {
+				continue;
+			}
 			var RMBs = convert2RMB(formatOrig(data_of(elements[i]), getLocationToken()),exchangeRate);
 			if (!RMBs) continue;
-			console.log("RMB="+RMBs);
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
 			node.setAttribute("name","RMB");
@@ -125,14 +141,18 @@ function showRMBforJP(exchangeRate, style) {
 		}
 	}
 }
-function showRMBforUK(exchangeRate, style) {
-	console.log("showRMB");
+function showRMBforUkDe(exchangeRate, style) {
 	var elements = document.getElementsByClassName("a-size-base a-text-bold");
 	if (elements && elements.length != 0) {
 		for (var i=0; i < elements.length; ++i) {
+			if (elements[i].getAttribute("token")) {
+				continue;
+			}
+			if (i+1 < elements.length && elements[i+1].getAttribute("token")) {
+				continue;
+			}
 			var RMBs = convert2RMB(formatOrig(data_of(elements[i]), getLocationToken()),exchangeRate);
 			if (!RMBs) continue;
-			console.log("RMB="+RMBs);
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
 			node.setAttribute("name","RMB");
@@ -159,24 +179,38 @@ chrome.runtime.onMessage.addListener(
 				showRMB(message.exchangeRate, "color:green;background-color:lightgrey");
 			break;
 			case "XHReqHappen":
-				if (!document.getElementById(resultsListTagId).getAttribute("token")) {
-					console.log("XHReqHappen+++");
-					toggleShowRMB();	
-				}
+				console.log("XHReqHappen+++");
+				deListenXmlHttpRequest();
+				toggleShowRMB(2000);
 			break;
 		}
 	}
 );
-function toggleShowRMB() {
-	message = new Object;
-	message.header = "reqExchangeRate";
-	message.locationToken = getLocationToken();
-	chrome.runtime.sendMessage(message);
+function eligibleShowRMB() {
+	var token = document.getElementById(resultsListTagId).getAttribute("token");
+	if (!token || token != "RMBshown") {
+		console.log("no RMB token");
+		return true;
+	}
+	return false;
+}
+function toggleShowRMB(time) {
+	setTimeout(function(){
+		message = new Object;
+		message.header = "reqExchangeRate";
+		message.locationToken = getLocationToken();
+		chrome.runtime.sendMessage(message);
+	}, time);// wait for browser show data complete
 }
 function listenXmlHttpRequest() {
 	message = new Object;
 	message.header = "listenXHRequest";
 	chrome.runtime.sendMessage(message);
 }
+function deListenXmlHttpRequest() {
+	message = new Object;
+	message.header = "deListenXHRequest";
+	chrome.runtime.sendMessage(message);
+}
 console.log("==========================");
-toggleShowRMB();
+toggleShowRMB(500);
