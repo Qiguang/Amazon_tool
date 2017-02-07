@@ -17,7 +17,7 @@ function formatOrig(orig, locationToken) {
 	orig = orig.replace(RegExp(",",'g'),'');
 	switch (locationToken) {
 		case "com":
-			matchRegex = RegExp("\\d+\\s+\\d+",'g');
+			matchRegex = RegExp("(\\d+\\s+\\d+|\\d+\\.\\d+)",'g');
 			replaceRegex = RegExp("(\\d+)\\s+(\\d+)");
 			replacePattern = "$1.$2";
 		break;
@@ -59,12 +59,21 @@ function getLocationToken() {
 }
 function showRMB(exchangeRate, style) {
 	console.log("showRMB");
+	if (RegExp("amazon\\.[a-z.]+/[^/]+/dp").exec(location.href)) {
+		showRMBProductPg(exchangeRate, style);
+	} else {
+		showRMBSchPg(exchangeRate, style);
+	}
+	listenXmlHttpRequest();
+	console.log("showRMB-end");
+}
+function showRMBSchPg(exchangeRate, style) {
 	switch (getLocationToken()) {
 		case "com":
-			showRMBforUS(exchangeRate, style);
+			showRMBSchPgUS(exchangeRate, style);
 		break;
 		case "co.jp":
-			showRMBforJP(exchangeRate, style);
+			showRMBSchPgJP(exchangeRate, style);
 		break;
 		case "co.uk":
 		case "de":
@@ -73,11 +82,30 @@ function showRMB(exchangeRate, style) {
 		default:
 		break;
 	}
-	document.getElementById(resultsListTagId).setAttribute("token","RMBshown");
-	listenXmlHttpRequest();
-	console.log("showRMB-end");
 }
-function showRMBforUS(exchangeRate, style) {
+function showRMBProductPg(exchangeRate, style) {
+	var element = document.getElementById("priceblock_ourprice");
+	if (element && !element.getAttribute("token")) {
+		var RMBs = convert2RMB(formatOrig(data_of(element), getLocationToken()),exchangeRate);
+		if (!RMBs) return;
+		var node = element.cloneNode(true);
+		node.setAttribute("style",style);
+		node.removeAttribute("id");
+		node.setAttribute("token","RMB");
+		var classValue = node.getAttribute("class");
+		classValue = classValue.replace(RegExp(" a-color-price"),"");
+		node.setAttribute("class",classValue);
+		var RMBsText;
+		RMBsText="¥ "+RMBs[0].toFixed(0);
+		for (var x=1; x<RMBs.length; ++x) {
+			RMBsText+="-¥ "+RMBs[x].toFixed(0);
+		}
+		node.innerHTML=RMBsText;
+		element.appendChild(node);
+		element.setAttribute("token","RMBshown");
+	}
+}
+function showRMBSchPgUS(exchangeRate, style) {
 	var elements = document.getElementsByClassName("sx-price sx-price-large");
 	if (elements && elements.length != 0) {
 		for (var i=0; i < elements.length; ++i) {
@@ -108,11 +136,9 @@ function showRMBforUS(exchangeRate, style) {
 			elements[i].parentNode.appendChild(node);
 			++i;
 		}
-	} else {
-		console.log("get"+"sx-price sx-price-large"+"failed");
 	}
 }
-function showRMBforJP(exchangeRate, style) {
+function showRMBSchPgJP(exchangeRate, style) {
 	var elements = document.getElementsByClassName("a-size-base a-text-bold");
 	if (elements && elements.length != 0) {
 		for (var i=0; i < elements.length; ++i) {
@@ -126,7 +152,7 @@ function showRMBforJP(exchangeRate, style) {
 			if (!RMBs) continue;
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
-			node.setAttribute("name","RMB");
+			node.setAttribute("token","RMB");
 			var classValue = node.getAttribute("class");
 			classValue = classValue.replace(RegExp(" a-color-price"),"");
 			node.setAttribute("class",classValue);
@@ -155,7 +181,7 @@ function showRMBforUkDe(exchangeRate, style) {
 			if (!RMBs) continue;
 			var node = elements[i].cloneNode(true);
 			node.setAttribute("style",style);
-			node.setAttribute("name","RMB");
+			node.setAttribute("token","RMB");
 			var classValue = node.getAttribute("class");
 			classValue = classValue.replace(RegExp(" a-color-price"),"");
 			node.setAttribute("class",classValue);
@@ -176,7 +202,7 @@ chrome.runtime.onMessage.addListener(
 		switch (message.header) {
 			case "exchangeRate":
 				console.log("exchangeRate="+message.exchangeRate);
-				showRMB(message.exchangeRate, "color:green;background-color:lightgrey");
+				showRMB(message.exchangeRate, "color:green;background-color:khaki");
 			break;
 			case "XHReqHappen":
 				console.log("XHReqHappen+++");
@@ -186,14 +212,6 @@ chrome.runtime.onMessage.addListener(
 		}
 	}
 );
-function eligibleShowRMB() {
-	var token = document.getElementById(resultsListTagId).getAttribute("token");
-	if (!token || token != "RMBshown") {
-		console.log("no RMB token");
-		return true;
-	}
-	return false;
-}
 function toggleShowRMB(time) {
 	setTimeout(function(){
 		message = new Object;

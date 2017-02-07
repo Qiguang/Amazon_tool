@@ -7,7 +7,7 @@ chrome.webRequest.onCompleted.addListener(
 			chrome.tabs.sendMessage(details.tabId,{header:"XHReqHappen"});
 		}
 	},
-	{urls:["*://www.amazon.com/*","*://www.amazon.co.jp/*","*://www.amazon.co.uk/*"]}
+	{urls:["*://www.amazon.com/*","*://www.amazon.co.jp/*","*://www.amazon.co.uk/*","*://www.amazon.de/*"]}
 );
 var idOfTabs = new Array();
 chrome.tabs.onRemoved.addListener(function(tabId){rmFrListeners(tabId);});
