@@ -1,5 +1,5 @@
-switch (getLocationToken()) {
-	case "com":
+switch (getLocationToken()+isProductPg()) {
+	case "comfalse":
 		document.getElementsByTagName("header")[0].setAttribute("style","position:fixed;top:0px;width:100%;z-index:100");
 		document.getElementById("main").setAttribute("style","margin-top:95px");
 	break;

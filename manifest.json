@@ -26,14 +26,7 @@
 						"*://www.amazon.co.jp/s/*","*://www.amazon.co.jp/gp/search/*","*://www.amazon.co.jp/*/dp/*",
 						"*://www.amazon.co.uk/s/*","*://www.amazon.co.uk/gp/search/*","*://www.amazon.co.uk/*/dp/*",
 						"*://www.amazon.de/s/*","*://www.amazon.de/gp/search/*","*://www.amazon.de/*/dp/*"],
-			"js": ["js/utils.js","js/showRMBschRsltPage.js"]
-		},
-		{
-			"matches": ["*://www.amazon.com/s/*","*://www.amazon.com/gp/search/*",
-						"*://www.amazon.co.jp/s/*","*://www.amazon.co.jp/gp/search/*",
-						"*://www.amazon.co.uk/s/*","*://www.amazon.co.uk/gp/search/*",
-						"*://www.amazon.de/s/*","*://www.amazon.de/gp/search/*"],
-			"js": ["js/utils.js","js/fixSearchBar.js"]
+			"js": ["js/utils.js","js/showRMBschRsltPage.js","js/fixSearchBar.js"]
 		}
 	],
 	"background": {

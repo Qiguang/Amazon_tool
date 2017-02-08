@@ -49,7 +49,7 @@ function formatOrig(orig, locationToken) {
 }
 function showRMB(exchangeRate, style) {
 	console.log("showRMB");
-	if (RegExp("amazon\\.[a-z.]+/[^/]+/dp").exec(location.href)) {
+	if (isProductPg()) {
 		showRMBProductPg(exchangeRate, style);
 	} else {
 		showRMBSchPg(exchangeRate, style);
@@ -74,8 +74,10 @@ function showRMBSchPg(exchangeRate, style) {
 	}
 }
 function showRMBProductPg(exchangeRate, style) {
-	var element = document.getElementById("priceblock_ourprice");
-	if (!element) element = document.getElementById("priceblock_saleprice");
+	var className = "priceblock_ourprice";
+	var element = document.getElementById(className);
+	className = "priceblock_saleprice";
+	if (!element) element = document.getElementById(className);
 	if (element && !element.getAttribute("token")) {
 		var RMBs = convert2RMB(formatOrig(data_of(element), getLocationToken()),exchangeRate);
 		if (!RMBs) return;
@@ -95,10 +97,11 @@ function showRMBProductPg(exchangeRate, style) {
 		element.appendChild(node);
 		element.setAttribute("token","RMBshown");
 	}
-	var elements = document.getElementsByClassName("a-size-base a-color-price");
+	className = "a-size-base a-color-price";
+	var elements = document.getElementsByClassName(className);
 	if (elements) {
 		for (var i = 0; i < elements.length; ++i) {
-			if (elements[i].getAttribute("token")) continue;
+			if (elements[i].getAttribute("token") || elements[i].className!=className) continue;
 			var RMBs = convert2RMB(formatOrig(data_of(elements[i]), getLocationToken()),exchangeRate);
 			if (!RMBs) return;
 			var node = elements[i].cloneNode(true);

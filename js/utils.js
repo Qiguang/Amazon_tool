@@ -32,3 +32,9 @@ function getLocationToken() {
 	}
 	return locationToken;
 }
+function isProductPg() {
+	if (RegExp("amazon\\.[a-z.]+/[^/]+/dp").exec(location.href)) {
+		return true;
+	}
+	return false;
+}
