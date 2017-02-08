@@ -49,3 +49,7 @@ chrome.runtime.onMessage.addListener(
 		}
 	}
 );
+getExRateFrNet("com", function(){});
+getExRateFrNet("co.jp", function(){});
+getExRateFrNet("co.uk", function(){});
+getExRateFrNet("de", function(){});

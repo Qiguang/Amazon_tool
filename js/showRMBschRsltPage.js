@@ -47,16 +47,6 @@ function formatOrig(orig, locationToken) {
 	}
 	return strings;
 }
-var locationToken = null;
-function getLocationToken() {
-	if (!locationToken) {
-		var result = RegExp("amazon\\.((?:\\w+\\.?)+)").exec(location.href);  
-		if (result) {
-			locationToken = result[1];
-		}
-	}
-	return locationToken;
-}
 function showRMB(exchangeRate, style) {
 	console.log("showRMB");
 	if (RegExp("amazon\\.[a-z.]+/[^/]+/dp").exec(location.href)) {
@@ -85,6 +75,7 @@ function showRMBSchPg(exchangeRate, style) {
 }
 function showRMBProductPg(exchangeRate, style) {
 	var element = document.getElementById("priceblock_ourprice");
+	if (!element) element = document.getElementById("priceblock_saleprice");
 	if (element && !element.getAttribute("token")) {
 		var RMBs = convert2RMB(formatOrig(data_of(element), getLocationToken()),exchangeRate);
 		if (!RMBs) return;
@@ -96,13 +87,35 @@ function showRMBProductPg(exchangeRate, style) {
 		classValue = classValue.replace(RegExp(" a-color-price"),"");
 		node.setAttribute("class",classValue);
 		var RMBsText;
-		RMBsText="¥ "+RMBs[0].toFixed(0);
+		RMBsText="¥"+RMBs[0].toFixed(0);
 		for (var x=1; x<RMBs.length; ++x) {
-			RMBsText+="-¥ "+RMBs[x].toFixed(0);
+			RMBsText+=" - ¥ "+RMBs[x].toFixed(0);
 		}
 		node.innerHTML=RMBsText;
 		element.appendChild(node);
 		element.setAttribute("token","RMBshown");
+	}
+	var elements = document.getElementsByClassName("a-size-base a-color-price");
+	if (elements) {
+		for (var i = 0; i < elements.length; ++i) {
+			if (elements[i].getAttribute("token")) continue;
+			var RMBs = convert2RMB(formatOrig(data_of(elements[i]), getLocationToken()),exchangeRate);
+			if (!RMBs) return;
+			var node = elements[i].cloneNode(true);
+			node.setAttribute("style",style);
+			node.setAttribute("token","RMB");
+			var classValue = node.getAttribute("class");
+			classValue = classValue.replace(RegExp(" a-color-price"),"");
+			node.setAttribute("class",classValue);
+			var RMBsText;
+			RMBsText="¥"+RMBs[0].toFixed(0);
+			for (var x=1; x<RMBs.length; ++x) {
+				RMBsText+=" - ¥ "+RMBs[x].toFixed(0);
+			}
+			node.innerHTML=RMBsText;
+			elements[i].appendChild(node);
+			elements[i].setAttribute("token","RMBshown");
+		}
 	}
 }
 function showRMBSchPgUS(exchangeRate, style) {
@@ -157,9 +170,9 @@ function showRMBSchPgJP(exchangeRate, style) {
 			classValue = classValue.replace(RegExp(" a-color-price"),"");
 			node.setAttribute("class",classValue);
 			var RMBsText;
-			RMBsText="RMB "+RMBs[0].toFixed(0);
+			RMBsText="RMB"+RMBs[0].toFixed(0);
 			for (var x=1; x<RMBs.length; ++x) {
-				RMBsText+="-RMB "+RMBs[x].toFixed(0);
+				RMBsText+=" - RMB "+RMBs[x].toFixed(0);
 			}
 			node.innerHTML=RMBsText;
 			elements[i].appendChild(node);

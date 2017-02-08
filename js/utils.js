@@ -22,3 +22,13 @@ function httpGetAsync(theUrl, callback)
 		console.log("get exchangeRate fail from "+theUrl);
 	}
 }
+var locationToken = null;
+function getLocationToken() {
+	if (!locationToken) {
+		var result = RegExp("amazon\\.((?:\\w+\\.?)+)").exec(location.href);  
+		if (result) {
+			locationToken = result[1];
+		}
+	}
+	return locationToken;
+}
