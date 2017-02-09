@@ -25,6 +25,7 @@ function formatOrig(orig, locationToken) {
 			matchRegex = RegExp("\\d+",'g');
 		break;
 		case "co.uk":
+		case "ca":
 			matchRegex = RegExp("([0-9.]+)",'g');
 		break;
 		case "de":
@@ -67,6 +68,7 @@ function showRMBSchPg(exchangeRate, style) {
 		break;
 		case "co.uk":
 		case "de":
+		case "ca":
 			 showRMBforUkDe(exchangeRate, style);
 		break;
 		default:

@@ -13,20 +13,17 @@
 			"19": "images/icon19.png",
 			"38": "images/icon38.png"
 		},
-		"default_title": "my clock",
+		"default_title": "Amazon Tools",
 		"default_popup": "popup.html"
 	},
 	"content_scripts": [
 		{
-			"matches": ["*://www.amazon.com/*", "*://www.amazon.co.jp/*"],
-			"js": ["js/changePageBkgdColor.js"]
-		},
-		{
 			"matches": ["*://www.amazon.com/s/*","*://www.amazon.com/gp/search/*","*://www.amazon.com/*/dp/*",
 						"*://www.amazon.co.jp/s/*","*://www.amazon.co.jp/gp/search/*","*://www.amazon.co.jp/*/dp/*",
 						"*://www.amazon.co.uk/s/*","*://www.amazon.co.uk/gp/search/*","*://www.amazon.co.uk/*/dp/*",
-						"*://www.amazon.de/s/*","*://www.amazon.de/gp/search/*","*://www.amazon.de/*/dp/*"],
-			"js": ["js/utils.js","js/showRMBschRsltPage.js","js/fixSearchBar.js"]
+						"*://www.amazon.de/s/*","*://www.amazon.de/gp/search/*","*://www.amazon.de/*/dp/*",
+						"*://www.amazon.ca/s/*","*://www.amazon.ca/gp/search/*","*://www.amazon.ca/*/dp/*"],
+			"js": ["js/utils.js","js/showRMBschRsltPage.js","js/fixSearchBar.js","js/fixPagesBar.js"]
 		}
 	],
 	"background": {
@@ -41,6 +38,8 @@
 		"*://www.amazon.com/",
 		"*://www.amazon.co.jp/",
 		"*://www.amazon.co.uk/",
+		"*://www.amazon.de/",
+		"*://www.amazon.ca/",
 		"http://hl.anseo.cn/"
 	]
 }

@@ -2,15 +2,14 @@
 	<head>
 		<style>
 			* {
-				margin: 0;
+				margin: 5px 2px 5px 2px;
 				padding: 0;
 			}
 			body {
-				width: 200px;
-				height: 100px;
+				width: 300px;
 			}
 			div {
-				line-height: 100px;
+				line-height: 50px;
 				font-size: 22px;
 				text-align: center;
 			}
@@ -21,12 +20,21 @@
 		</div>	
 		<hr/>
 		<script src="js/my_clock.js"></script>
-		<div>
-			<ul>
-				<li>
-					<button style="line-height:1">disable</button>	
-				</li>
-			</ul>
-		</div>	
+		<p>Amazon Helper
+			<button style="float: right;" type="button">Enable</button>
+		</p>
+		<hr />
+		<form>
+			<input name="vehicle" type="checkbox" value="Bike" />Show RMB on Search Result Page
+			<br />
+			<input name="vehicle" type="checkbox" value="Car" />Show RMB on Product Detail Page
+		</form>
+		<hr />
+		<form>
+			<input name="vehicle" type="checkbox" value="Bike" />Fix Search Box Position on Search Result Page
+			<br /> 
+			<input name="vehicle" type="checkbox" value="Car" />Fix Search Box Position on Product Detail Page
+		</form>
+		<hr />
 	</body>	
 </html>

@@ -21,6 +21,9 @@ function getExRateFrNet(regionToken, callback) { // get exchange rate from inter
 		case "de":
 			regex = RegExp("1\\s*欧元[^0-9]*([0-9.]+)\\s*人民币");
 		break;
+		case "ca":
+			regex = RegExp("1\\s*加拿大元[^0-9]*([0-9.]+)\\s*人民币");
+		break;
 		default:
 		break;
 	}
@@ -53,3 +56,4 @@ getExRateFrNet("com", function(){});
 getExRateFrNet("co.jp", function(){});
 getExRateFrNet("co.uk", function(){});
 getExRateFrNet("de", function(){});
+getExRateFrNet("ca", function(){});
