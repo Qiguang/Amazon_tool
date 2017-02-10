@@ -29,8 +29,8 @@
 	"background": {
 		"scripts": [
 			"js/utils.js",
-			"js/getExchangeRate.js",
-			"js/background.js"
+			"js/background/getExchangeRate.js",
+			"js/background/background.js"
 		]
 	},
 	"permissions": [
