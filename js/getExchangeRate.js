@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
 				console.log("location "+message.locationToken);
 				getExRateFrNet(message.locationToken, function(exchangeRate){
 					chrome.tabs.sendMessage(sender.tab.id,
-						{header:"exchangeRate",exchangeRate:exchangeRate});
+						{header:"exchangeRate",locToken:message.locationToken,exchangeRate:exchangeRate});
 				});
 			break;
 		}

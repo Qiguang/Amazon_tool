@@ -38,3 +38,25 @@ function isProductPg() {
 	}
 	return false;
 }
+function isNumber(num) {
+	return !isNaN(num);
+}
+var msgHandlerMap = new Array();
+function pushMsgHandler(msgName, handler) {
+	if (!msgHandlerMap[msgName]) {
+		msgHandlerMap[msgName] = new Array();
+	}
+	msgHandlerMap[msgName].push(handler);
+}
+chrome.runtime.onMessage.addListener(
+	function(message, sender, sendResponse){
+		if (msgHandlerMap[message.header] && msgHandlerMap[message.header].length) {
+			var qLen = msgHandlerMap[message.header].length;
+			while (qLen--) {
+				var func = msgHandlerMap[message.header].shift();
+				console.log("call--->"+func.name);
+				func(message);
+			}
+		}
+	}
+);

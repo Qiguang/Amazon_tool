@@ -55,7 +55,7 @@ function showRMB(exchangeRate, style) {
 	} else {
 		showRMBSchPg(exchangeRate, style);
 	}
-	listenXmlHttpRequest();
+	pushMsgHandler("XHReqHappen", refreshRMBshow);
 	console.log("showRMB-end");
 }
 function showRMBSchPg(exchangeRate, style) {
@@ -214,22 +214,18 @@ function showRMBforUkDe(exchangeRate, style) {
 		}
 	}
 }
-var resultsListTagId = "s-results-list-atf";
-chrome.runtime.onMessage.addListener(
-	function(message, sender, sendResponse){
-		switch (message.header) {
-			case "exchangeRate":
-				console.log("exchangeRate="+message.exchangeRate);
-				showRMB(message.exchangeRate, "color:green;background-color:khaki");
-			break;
-			case "XHReqHappen":
-				console.log("XHReqHappen+++");
-				deListenXmlHttpRequest();
-				toggleShowRMB(2000);
-			break;
-		}
+function handleExRate(message){
+	if (message.locToken == getLocationToken()) {
+		console.log("exchangeRate="+message.exchangeRate);
+		showRMB(message.exchangeRate, "color:green;background-color:khaki");
 	}
-);
+	pushMsgHandler("exchangeRate", handleExRate);
+}
+function refreshRMBshow(message){
+		console.log("XHReqHappen+++");
+		toggleShowRMB(2000);
+	}
+pushMsgHandler("exchangeRate", handleExRate);
 function toggleShowRMB(time) {
 	setTimeout(function(){
 		message = new Object;
@@ -237,16 +233,6 @@ function toggleShowRMB(time) {
 		message.locationToken = getLocationToken();
 		chrome.runtime.sendMessage(message);
 	}, time);// wait for browser show data complete
-}
-function listenXmlHttpRequest() {
-	message = new Object;
-	message.header = "listenXHRequest";
-	chrome.runtime.sendMessage(message);
-}
-function deListenXmlHttpRequest() {
-	message = new Object;
-	message.header = "deListenXHRequest";
-	chrome.runtime.sendMessage(message);
 }
 console.log("==========================");
 toggleShowRMB(500);
