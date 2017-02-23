@@ -224,7 +224,7 @@ function handleExRate(message){
 function refreshRMBshow(message){
 		console.log("XHReqHappen+++");
 		toggleShowRMB(2000);
-	}
+}
 pushMsgHandler("exchangeRate", handleExRate);
 function toggleShowRMB(time) {
 	setTimeout(function(){
